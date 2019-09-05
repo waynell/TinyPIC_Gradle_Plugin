@@ -35,7 +35,13 @@
         whiteList = [
         	// 在这里添加文件白名单，支持正则表达式
         ]
-        apiKey = 'your tiny API key'
+        apiKey = [
+        
+		 	/**
+			 * 'your tiny API key'
+			 * 支持配置多个，每个key只有500张/月，一个key失效
+			 * 切换第二个key去做压缩
+			 */        ]
     }
 
 使用`Android Studio`的同学，可以在`tinypng`目录中找到相关的构建任务。或者也可以直接在终端中运行`./gradlew tinyPng`命令来执行任务

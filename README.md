@@ -35,7 +35,13 @@ Then you need to apply the plugin and configure your `tinyinfo` by adding the fo
         whiteList = [
         	// your white list, support Regular Expressions
         ]
-        apiKey = 'your tiny API key'
+        apiKey = [
+			/**
+			 * enter your tiny API key list
+			 * Support multiple configurations, each key is only 500/month, 
+			 * a key failure immediately switch the second key to do compression
+			 */
+        ]
     }
 
 If you are using `Android Studio`, you can find the generate task option in `tinypng` group. Or alternatively, you run `./gradlew tinyPng` in your terminal.
