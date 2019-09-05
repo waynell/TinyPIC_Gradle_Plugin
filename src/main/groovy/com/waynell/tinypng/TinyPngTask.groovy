@@ -17,7 +17,9 @@ import java.text.DecimalFormat
 public class TinyPngTask extends DefaultTask {
 
     def android
-    def TinyPngExtension configuration
+    static TinyPngExtension configuration
+
+    static lastValidateKeyIndex = 0
 
     TinyPngTask() {
         description = 'Tiny Resources'
@@ -63,6 +65,7 @@ public class TinyPngTask extends DefaultTask {
         def accountError = false
         def beforeTotalSize = 0
         def afterTotalSize = 0
+        def apiKeys = configuration.apiKey
         label: for (File file : resDir.listFiles()) {
             def filePath = file.path
             def fileName = file.name
@@ -89,6 +92,7 @@ public class TinyPngTask extends DefaultTask {
 
                 def fis = new FileInputStream(file)
 
+                labelTinifyAccount:
                 try {
                     def beforeSize = fis.available()
                     def beforeSizeStr = formetFileSize(beforeSize)
@@ -106,6 +110,14 @@ public class TinyPngTask extends DefaultTask {
 
                     println("beforeSize: $beforeSizeStr -> afterSize: ${afterSizeStr}")
                 } catch (AccountException e) {
+                    if (lastValidateKeyIndex < apiKeys.size() - 1) {
+                        println("API key " + apiKeys[lastValidateKeyIndex] +
+                                " limit, change Key to compress.")
+                        Tinify.setKey(apiKeys[++lastValidateKeyIndex])
+                        println("current API key: " + Tinify.key())
+                        continue labelTinifyAccount
+                    }
+
                     println("AccountException: ${e.getMessage()}")
                     accountError = true
                     break
@@ -144,10 +156,20 @@ public class TinyPngTask extends DefaultTask {
         }
 
         def apiKey = configuration.apiKey
+
+        lableTraversal:
         try {
-            Tinify.setKey("${apiKey}")
+            Tinify.setKey(apiKey.get(lastValidateKeyIndex))
             Tinify.validate()
-        } catch (Exception ignored) {
+            println("current API key: " + Tinify.key() + "go compress...")
+        } catch (Exception e) {
+            if (lastValidateKeyIndex < apiKey.size() - 1) {
+                println("API key " + apiKeys[lastValidateKeyIndex] +
+                        " limit, change Key to compress.")
+                lastValidateKeyIndex++
+                continue lableTraversal
+            }
+
             println("Tiny Validation of API key failed.")
             ignored.printStackTrace()
             return

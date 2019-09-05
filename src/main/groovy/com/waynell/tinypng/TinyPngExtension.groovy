@@ -5,13 +5,13 @@ package com.waynell.tinypng
  * @author Wayne
  */
 public class TinyPngExtension {
-    String apiKey
+    ArrayList<String> apiKey
     ArrayList<String> whiteList;
     ArrayList<String> resourceDir;
     ArrayList<String> resourcePattern;
 
     public TinyPngExtension() {
-        apiKey = ""
+        apiKey = []
         whiteList = []
         resourceDir = []
         resourcePattern = []
